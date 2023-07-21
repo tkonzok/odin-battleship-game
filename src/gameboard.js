@@ -11,8 +11,8 @@ class Gameboard {
     fillCells(rows=10, columns=10) {
         this.rows = rows;
         this.columns = columns;
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
+        for (let i = 0; i < columns; i++) {
+            for (let j = 0; j < rows; j++) {
                 this.cells.push({x: i, y: j, contains: null, shot: false})
             }
         }
