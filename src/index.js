@@ -11,6 +11,6 @@ gameboard.placeShip(ship, [[0, 2], [0, 3]])
 console.log(gameboard.getCells())
 ship.hit()
 console.log(gameboard.getCells())
-//gameboard.shipSinks(ship)
+gameboard.shipHit([1, 1])
 console.log(gameboard.getCells())
 
