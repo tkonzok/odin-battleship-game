@@ -19,7 +19,7 @@ test('at game start not all ships are sunk', () => {
 test('ship placed correctly', () => {
     gameboard.fillCells(10, 10)
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     let board = gameboard.getCells()
     expect(board[3].contains).toBe(ship);
 });
@@ -27,7 +27,7 @@ test('ship placed correctly', () => {
 test('ship receives attack', () => {
     gameboard.fillCells(10, 10)
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     gameboard.receiveAttack([0, 2])
     let board = gameboard.getCells()
     expect(board[3].contains.timesHit).toBe(1);
@@ -36,7 +36,7 @@ test('ship receives attack', () => {
 test('water receives attack', () => {
     gameboard.fillCells(10, 10)
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     gameboard.receiveAttack([0, 1])
     let board = gameboard.getCells()
     expect(board[1].shot).toBe(true);
@@ -45,7 +45,7 @@ test('water receives attack', () => {
 test('all diagonal cells around the hit cell with ship receive shot', () => {
     gameboard.fillCells()
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     gameboard.shipHit([1, 1])
     expect(gameboard.getCells()).toEqual(expect.arrayContaining([
         {x: 0, y: 0, contains: null, shot: true}, 
@@ -58,7 +58,7 @@ test('all diagonal cells around the hit cell with ship receive shot', () => {
 test('all cells around the ship receive shot when ship sinks', () => {
     gameboard.fillCells(10, 10)
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     gameboard.shipSinks(ship)
     expect(gameboard.getCells()).toEqual(expect.arrayContaining([
         {x: 1, y: 1, contains: null, shot: true}, 
@@ -73,7 +73,7 @@ test('all cells around the ship receive shot when ship sinks', () => {
 test('only available cells to place ship are listed', () => {
     gameboard.fillCells(10, 10)
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     const ship2 = new Ship(3)
     const result = gameboard.getAvailableCellsToPlaceShip(ship2.size)
     expect(result).toEqual(expect.arrayContaining([
@@ -86,7 +86,7 @@ test('only available cells to place ship are listed', () => {
 test('not available cells to place ship are not listed', () => {
     gameboard.fillCells(10, 10)
     const ship = new Ship(2)
-    gameboard.placeShip(ship, [[0, 2], [0, 3]])
+    gameboard.placeShip(ship, [0, 2], true)
     const ship2 = new Ship(3)
     const result = gameboard.getAvailableCellsToPlaceShip(ship2.size)
     expect(result).not.toEqual(expect.arrayContaining([

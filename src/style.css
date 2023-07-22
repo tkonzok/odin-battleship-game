@@ -1,5 +1,5 @@
 :root {
-  --rows: 8;
+  --rows: 10;
   --columns: 10;
 }
 
@@ -55,4 +55,10 @@ body {
 
 .available:hover {
   background-color: #0f9351;
+}
+
+.ship::before,
+.ship::after {
+  background-color: aquamarine;
+  z-index: 100;
 }

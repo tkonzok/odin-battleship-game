@@ -4,7 +4,7 @@ class Player {
         this.opponent = null
     }
 
-    registerOpponent (opp) {
+    registerOpponentGameboard (opp) {
         this.opponent = opp
     }
 

@@ -26,59 +26,66 @@ class Gameboard {
         const rows = this.rows
         const columns = this.columns
         const allCells = this.cells
-        let emptyCells = allCells.filter(cell => !cell.contains)
-        if (horizontal === true) {
-            emptyCells = emptyCells.filter(cell => cell.x <= columns - size)
-        } else {
-            emptyCells = emptyCells.filter(cell => cell.y <= rows - size)
-        }
         const cellsAround = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]
-        let notAvailableCells = []
-        for (const cell of emptyCells) {
-            let surroundingCells = []
+        
+        function removeCellsWithShip(cells) {
+            return cells.filter(cell => !cell.contains)
+        }
+
+        function removeCellsOutOfGameboard(cells) { // cell objects with no ship and where new ship doesn't exceed border
             if (horizontal === true) {
-                surroundingCells = cellsAround
-                .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
-                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < rows && valuePair[1] < (columns - size + 1));
+                return cells.filter(cell => cell.x <= columns - size)
             } else {
-                surroundingCells = cellsAround
+                return cells.filter(cell => cell.y <= rows - size)
+            }
+        }
+
+        function getCellsAround(cell) {
+            if (horizontal === true) {
+                return cellsAround
                 .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
-                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < (rows - size + 1) && valuePair[1] < columns);
-            }
-            for (const cell of surroundingCells) {
-                const index = allCells.findIndex(obj => obj.x == cell[0] && obj.y == cell[1])
-                if (!notAvailableCells.includes(index) && allCells[index].contains) {
-                    notAvailableCells.push(index)
-                }
-            }
-        }
-        notAvailableCells = notAvailableCells.map(x => allCells[x])
-        let availableCells = emptyCells.filter(x => !notAvailableCells.includes(x))
-        notAvailableCells = []
-        if (horizontal === true) {
-            for (const cell of availableCells) {
-                const index = allCells.findIndex(obj => obj.x == cell[0] && obj.y == cell[1])
-                for (let i = 1; i < size; i++) {
-                    if (!notAvailableCells.includes(index) && !availableCells.includes(allCells[index + i])) {
-                        notAvailableCells.push(index)
+                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < rows && valuePair[1] < (columns - size + 1)); // returns array of in-bound-cell coordinates (empty and not empty ones) around each empty cell 
+            } else {
+                return cellsAround
+                .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
+                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < (rows - size + 1) && valuePair[1] < columns); // returns array of in-bound-cell coordinates (empty and not empty ones) around each empty cell 
+            } 
+        }  
+
+        function removeCellsWithShipAround(cells) {
+            let notAvailableCells = []
+            for (const cell of cells) {
+                const index = allCells.findIndex(cell => cell === cell)
+                let surroundingCells = getCellsAround(cell) //list of coordinates
+                for (const surrCell of surroundingCells) {
+                    const surrIndex = allCells.findIndex(obj => obj.x == surrCell[0] && obj.y == surrCell[1])
+                    if (!notAvailableCells.includes(allCells[index]) && allCells[surrIndex].contains) {
+                        notAvailableCells.push(cell) // not available coordinates
                     }
                 }
             }
-        } else {
-            for (const cell of availableCells) {
-                const index = allCells.findIndex(obj => obj.x == cell[0] && obj.y == cell[1])
-                for (let i = 1; i < size; i++) {
-                    if (!notAvailableCells.includes(index) && !availableCells.includes(allCells[index + i * columns])) {
-                        notAvailableCells.push(index)
-                    }
-                }
-            }
+            let availableCells = cells.filter(x => !notAvailableCells.includes(x))
+            return availableCells
         }
-        availableCells = availableCells.filter(x => !notAvailableCells.includes(x))
+        
+        let availableCells = removeCellsWithShip(allCells);
+        availableCells = removeCellsOutOfGameboard(availableCells)
+        availableCells = removeCellsWithShipAround(availableCells)
+        console.log(availableCells)
         return availableCells
     }
 
-    placeShip(ship, arrayOfCoordinates) {
+    placeShip(ship, cell, horizontal) {
+        let arrayOfCoordinates = [cell]
+        if (horizontal) {
+            for (let i = 1; i < ship.size ; i++) {
+                arrayOfCoordinates.push([cell[0] + i, cell[1]])
+            }
+        } else {
+            for (let i = 1; i < ship.size ; i++) {
+                arrayOfCoordinates.push([cell[0], cell[1] + i * this.columns])
+            }
+        }
         for (const coordinates of arrayOfCoordinates) {
             const cell = this.cells.find(cell => {
                 return (cell.x === coordinates[0] && cell.y === coordinates[1])
