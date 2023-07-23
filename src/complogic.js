@@ -19,7 +19,10 @@ class CompLogic {
     }
 
     randomPickCell(availableCells) {
-        return availableCells[(Math.floor(Math.random() * availableCells.length))]
+        console.log(availableCells)
+        const pick = (Math.floor(Math.random() * availableCells.length))
+        console.log(pick)
+        return availableCells[pick]
     }
 }
 

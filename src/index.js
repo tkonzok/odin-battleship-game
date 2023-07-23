@@ -3,10 +3,11 @@ import './style.css';
 import { Gameboard } from './gameboard'
 import { Ship } from './ship'
 import { Player } from './player'
-import { Battlefields, placement } from './dom'
+import { Battlefields, Placement } from './dom'
+import { CompLogic } from './complogic';
 
 const battlefieldsDom = new Battlefields()
-battlefieldsDom.createBattlefiels(10, 10)
+battlefieldsDom.createBattlefields(10, 10)
 
 const player = new Player('Player');
 const comp = new Player('Comp');
@@ -20,25 +21,49 @@ compGameboard.fillCells(10, 10)
 player.registerOpponentGameboard(compGameboard)
 comp.registerOpponentGameboard(playerGameboard)
 
-const sizesOfShips = [5, 4, 4, 3, 3, 2, 2]
+const compLogic = new CompLogic(compGameboard, playerGameboard)
 
-async function placeAllShips(sizesOfShips) {
-    for (let i = 0; i < sizesOfShips.length; i++) {
-        const ship = new Ship(sizesOfShips[i])
-        let availableCells = playerGameboard.getAvailableCellsToPlaceShip(ship.size, true) //true = horizontal, false = vertical
-        battlefieldsDom.highlightAvailableCells(availableCells)
-        const cell = await receivePlacement(availableCells)
-        playerGameboard.placeShip(ship, cell, true) //true = horizontal, false = vertical
-        battlefieldsDom.placeShip(ship.size, cell, true)  //true = horizontal, false = vertical
-        console.log(cell)
-        console.log(playerGameboard)
-        battlefieldsDom.removeHighlight()
-    }  
+const sizesOfShips = [7, 6, 5, 4, 3, 2, 1]
+playerGameboard.createShips(sizesOfShips)
+compGameboard.createShips(sizesOfShips)
+
+const playerShips = playerGameboard.ships
+const compShips = compGameboard.ships
+
+async function placeShip(ship, horizontal=true) {
+    let availableCells = playerGameboard.getAvailableCellsToPlaceShip(ship.size, horizontal) //true = horizontal, false = vertical
+    battlefieldsDom.highlightAvailableCells(availableCells)
+    const placement = new Placement()
+    const cell = await placement.doIt(availableCells)
+    console.log(cell)
+    playerGameboard.placeShip(ship, cell, horizontal) //true = horizontal, false = vertical
+    battlefieldsDom.placeShip('Player', ship.size, cell, horizontal)  //true = horizontal, false = vertical
+    battlefieldsDom.removeHighlight() 
 }
 
-async function receivePlacement(availableCells) {
-    const coo = await placement.doIt(availableCells)
-    return coo
+function compPlaceShip(ship, horizontal=true) {
+    let availableCells = compGameboard.getAvailableCellsToPlaceShip(ship.size, horizontal) //true = horizontal, false = vertical
+    const cell = compLogic.randomPickCell(availableCells)
+    console.log(cell)
+    const coordinates = [cell.x, cell.y]
+    compGameboard.placeShip(ship, coordinates, horizontal) //true = horizontal, false = vertical
+    battlefieldsDom.placeShip('Comp', ship.size, coordinates, horizontal)  //true = horizontal, false = vertical
 }
 
-placeAllShips(sizesOfShips)
+for (let ship of playerShips) {
+    let horizontal = true
+    let rand = Math.floor(Math.random() * 2)
+    if (rand === 0) {
+        horizontal = false
+    }
+    await placeShip(ship, horizontal)
+}
+
+for (let ship of compShips) {
+    let horizontal = true
+    let rand = Math.floor(Math.random() * 2)
+    if (rand === 0) {
+        horizontal = false
+    }
+    compPlaceShip(ship, horizontal)
+}

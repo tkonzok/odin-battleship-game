@@ -1,3 +1,5 @@
+import { Ship } from './ship';
+
 class Gameboard {
     constructor() {
         this.rows = 0;
@@ -22,6 +24,13 @@ class Gameboard {
         return this.cells
     }
 
+    createShips(lengths) {
+        for (let length of lengths) {
+            const ship = new Ship(length)
+            this.ships.push(ship)
+        }
+    }
+
     getAvailableCellsToPlaceShip(size, horizontal=true) {
         const rows = this.rows
         const columns = this.columns
@@ -32,35 +41,48 @@ class Gameboard {
             return cells.filter(cell => !cell.contains)
         }
 
-        function removeCellsOutOfGameboard(cells) { // cell objects with no ship and where new ship doesn't exceed border
-            if (horizontal === true) {
-                return cells.filter(cell => cell.x <= columns - size)
-            } else {
-                return cells.filter(cell => cell.y <= rows - size)
+        function availableShipPositions(cells) {
+            let availablePositions = []
+            for (let cell of cells) {
+                let shipCells = []
+                if (horizontal === true) {
+                    for (let i = 0; i < size; i++) {
+                        shipCells.push(cells.filter(c => c.x === (cell.x + i) && c.y === cell.y)[0])
+                    }
+                } else {
+                    for (let i = 0; i < size; i++) {
+                        shipCells.push(cells.filter(c => c.x === cell.x && c.y === (cell.y + i))[0])
+                    }
+                }
+                if (!shipCells.includes(undefined)) {
+                    let cellAvailable = true
+                    for (let shipCell of shipCells) {
+                        if (shipCell.contains) {
+                            cellAvailable = false
+                        }
+                    }
+                    if (cellAvailable) {
+                        availablePositions.push(cell)
+                    }
+                }
             }
+            return availablePositions
         }
 
         function getCellsAround(cell) {
-            if (horizontal === true) {
-                return cellsAround
-                .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
-                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < rows && valuePair[1] < (columns - size + 1)); // returns array of in-bound-cell coordinates (empty and not empty ones) around each empty cell 
-            } else {
-                return cellsAround
-                .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
-                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < (rows - size + 1) && valuePair[1] < columns); // returns array of in-bound-cell coordinates (empty and not empty ones) around each empty cell 
-            } 
+            return cellsAround.map(coordinates => [coordinates[0] + cell.x, coordinates[1] + cell.y])  
         }  
 
         function removeCellsWithShipAround(cells) {
             let notAvailableCells = []
             for (const cell of cells) {
-                const index = allCells.findIndex(cell => cell === cell)
                 let surroundingCells = getCellsAround(cell) //list of coordinates
                 for (const surrCell of surroundingCells) {
                     const surrIndex = allCells.findIndex(obj => obj.x == surrCell[0] && obj.y == surrCell[1])
-                    if (!notAvailableCells.includes(allCells[index]) && allCells[surrIndex].contains) {
-                        notAvailableCells.push(cell) // not available coordinates
+                    if (surrIndex != -1) {
+                        if (allCells[surrIndex].contains) {
+                            notAvailableCells.push(cell) // not available coordinates
+                        }
                     }
                 }
             }
@@ -69,8 +91,8 @@ class Gameboard {
         }
         
         let availableCells = removeCellsWithShip(allCells);
-        availableCells = removeCellsOutOfGameboard(availableCells)
         availableCells = removeCellsWithShipAround(availableCells)
+        availableCells = availableShipPositions(availableCells)
         console.log(availableCells)
         return availableCells
     }
@@ -83,7 +105,7 @@ class Gameboard {
             }
         } else {
             for (let i = 1; i < ship.size ; i++) {
-                arrayOfCoordinates.push([cell[0], cell[1] + i * this.columns])
+                arrayOfCoordinates.push([cell[0], cell[1] + i])
             }
         }
         for (const coordinates of arrayOfCoordinates) {

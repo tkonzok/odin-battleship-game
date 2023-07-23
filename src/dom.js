@@ -5,7 +5,7 @@ class Battlefields {
         this.columns = 0
     }
 
-    createBattlefiels(rows = 10, columns = 10) {
+    createBattlefields(rows = 10, columns = 10) {
         const playerBattlefield = document.createElement('div')
         this.playerContainer.appendChild(playerBattlefield);
 
@@ -51,7 +51,7 @@ class Battlefields {
         }
     }
 
-    placeShip(size, cell, horizontal = true) {
+    placeShip(board, size, cell, horizontal = true) {
         let coordinates = [cell];
         if (horizontal) {
             for (let i = 1; i < size; i++) {
@@ -59,56 +59,58 @@ class Battlefields {
             }
         } else {
             for (let i = 1; i < size; i++) {
-                coordinates.push([cell[0], cell[1] + i * this.columns])
+                coordinates.push([cell[0], cell[1] + i])
             }
         }
         for (const pair of coordinates) {
-            const div = document.getElementById(`playerCell[${pair[0]}, ${pair[1]}]`);
-            div.classList.add('ship')
+            if (board === 'Player') {
+                const div = document.getElementById(`playerCell[${pair[0]}, ${pair[1]}]`);
+                div.classList.add('ship')
+            } else {
+                const div = document.getElementById(`compCell[${pair[0]}, ${pair[1]}]`);
+                div.classList.add('ship')
+            }
         }
     }
 }
 
-const placement = (() => {
-    let waitForPressResolve;
-    let x = 99;
-    let y = 99;
-
-    function waitForPress() {
-        return new Promise(resolve => waitForPressResolve = resolve);
+class Placement {
+    constructor() {
+        this.waitForPressResolve;
+        this.x = 99;
+        this.y = 99;
+    }
+    
+    waitForPress() {
+        return new Promise(resolve => this.waitForPressResolve = resolve);
     }
 
-    function btnResolver(coordX, coordY) {
-        x = coordX;
-        y = coordY;
-        if (waitForPressResolve) waitForPressResolve();
+    btnResolver(coordX, coordY) {
+        this.x = coordX;
+        this.y = coordY;
+        if (this.waitForPressResolve) this.waitForPressResolve();
     }
 
-    function receivePlacement(availableCells) {
+    receivePlacement(availableCells) {
         for (const cell of availableCells) {
             const element = document.getElementById(`playerCell[${cell.x}, ${cell.y}]`)
-            element.addEventListener('click', () => {btnResolver(cell.x, cell.y)})
+            element.addEventListener('click', () => {this.btnResolver(cell.x, cell.y)})
         }
     }
 
-    function removeListener(availableCells) {
+    removeListener(availableCells) {
         for (const cell of availableCells) {
             const element = document.getElementById(`playerCell[${cell.x}, ${cell.y}]`)
-            element.removeEventListener('click', btnResolver)
+            element.removeEventListener('click', this.btnResolver)
         }
     }
 
-    async function doIt(availableCells) {
-        receivePlacement(availableCells)
-        await waitForPress()
-        console.log(x);
-        console.log(y);
-        removeListener(availableCells)
-        console.log('finished');
-        return [x, y]
+    async doIt(availableCells) {
+        this.receivePlacement(availableCells)
+        await this.waitForPress()
+        this.removeListener(availableCells)
+        return [this.x, this.y]
     }
+}
 
-    return { doIt }
-})()
-
-export { Battlefields, placement }
+export { Battlefields, Placement }
