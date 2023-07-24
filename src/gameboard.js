@@ -93,7 +93,17 @@ class Gameboard {
         let availableCells = removeCellsWithShip(allCells);
         availableCells = removeCellsWithShipAround(availableCells)
         availableCells = availableShipPositions(availableCells)
-        console.log(availableCells)
+        return availableCells
+    }
+
+    getAvailableCellsToMakeMove() {
+        const allCells = this.cells
+        
+        function removeCellsWithShot(cells) {
+            return cells.filter(cell => cell.shot === false)
+        }
+
+        let availableCells = removeCellsWithShot(allCells);
         return availableCells
     }
 
@@ -120,25 +130,34 @@ class Gameboard {
         const cell = this.cells.find(cell => {
             return (cell.x === coordinates[0] && cell.y === coordinates[1])
         })
-        if (cell.contains) {
-            cell.contains.hit()
-        }
         cell.shot = true
+        if (cell.contains) {
+            let ship = cell.contains
+            ship.hit()
+            this.shipHit(cell)
+            return ship;
+        }
     }
 
     updateShipStatus() {
+        for (const ship of this.ships) {
+            if (ship.isSunk()) {
+                const index = this.ships.findIndex(x => x == ship);
+                this.sunkShips.push(ship);
+                this.ships.splice(index, 1)
+            }
+        }
         this.allShipsSunk = (this.ships.length == 0 && this.sunkShips.length != 0)
     }
 
-    shipHit(coordinates) {
+    shipHit(cell) {
         const rows = this.rows
         const columns = this.columns
         const allCells = this.cells
-        const cell = allCells.filter(cell => (cell.x === coordinates[0] && cell.y === coordinates[1]))
         const cellsAround = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
         let emptyCellsAround = []
         const surroundingCells = cellsAround
-            .map(valuePair => [valuePair[0] + cell[0].x, valuePair[1] + cell[0].y])
+            .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
             .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < rows && valuePair[1] < columns);
         for (const cell of surroundingCells) {
             const index = allCells.findIndex(obj => obj.x == cell[0] && obj.y == cell[1])
@@ -174,6 +193,8 @@ class Gameboard {
         for (const cell of emptyCellsAround) {
             cell.shot = true
         }
+        console.log('sipSinks')
+        console.log(ship)
     }
 }
 

@@ -9,7 +9,8 @@ class Player {
     }
 
     attack (coordinates) {
-        this.opponent.receiveAttack(coordinates)
+        let ship = this.opponent.receiveAttack(coordinates)
+        return ship
     }
 }
 
