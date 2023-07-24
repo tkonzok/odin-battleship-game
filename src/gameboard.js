@@ -107,6 +107,26 @@ class Gameboard {
         return availableCells
     }
 
+    isShipAround() {
+        const rows = this.rows
+        const columns = this.columns
+        const cellsAround = [[-1, 0], [0, 1], [0, -1], [1, 0]]
+        let shipAround = null
+        const shipCells = this.cells.filter(cell => cell.contains && cell.shot)
+        for (const cell of shipCells) {
+            const surroundingCells = cellsAround
+                .map(valuePair => [valuePair[0] + cell.x, valuePair[1] + cell.y])
+                .filter(valuePair => valuePair[0] >= 0 && valuePair[1] >= 0 && valuePair[0] < rows && valuePair[1] < columns);
+            for (const surrCell of surroundingCells) {
+                const index = this.cells.findIndex(obj => obj.x == surrCell[0] && obj.y == surrCell[1])
+                if(this.cells[index].shot === false) {
+                    shipAround = this.cells[index]
+                }
+            }
+        }
+        return shipAround
+    }
+
     placeShip(ship, cell, horizontal) {
         let arrayOfCoordinates = [cell]
         if (horizontal) {

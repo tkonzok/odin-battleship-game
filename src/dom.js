@@ -38,9 +38,9 @@ class Battlefields {
         }
     }
 
-    highlightAvailableCells(cells) {
+    highlightAvailableCells(user, cells) {
         for (const cell of cells) {
-            const div = document.getElementById(`playerCell[${cell.x}, ${cell.y}]`);
+            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
             div.classList.add('available')
         }
     }
@@ -81,6 +81,17 @@ class Battlefields {
             if (cell.shot && cell.contains) {
                 div.classList.add('hit')
             }            
+        }
+    }
+
+    updateDisplay(phase, activePlayer = null, winner = null, ship = null) {
+        const display = document.getElementById('display')
+        if (winner) {
+            display.textContent = `Game over! The winner is ${winner}`
+        } else if (phase === 'game') {
+            display.textContent = `It's ${activePlayer}s turn`
+        } else if (phase === 'pre-game') {
+            display.textContent = `It's your turn to place a ship of size ${ship.size}`
         }
     }
 }

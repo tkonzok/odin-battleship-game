@@ -1,26 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+
 :root {
   --rows: 10;
   --columns: 10;
 }
 
 body {
-  background-color: #aba8a8;
+  background-image: url(turku_mirrored_LQ.jpg);
+  background-position: center top;
+  background-repeat: no-repeat;
+  height: 100vh;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-family: "VT323", monospace;
+}
+
+.title {
+  font-size: 200px;
+  color: #eeeeee;
+  text-align: center;
+}
+
+.display {
+  font-size: 56px;
+  background-color: #000000ac;
+  color: #eeeeee;
+  text-align: center;
+  width: 350px;
+  height: 200px;
+  margin-bottom: 50px;
 }
 
 #battlefields-container {
-  background-color: #8a8a8a;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 100px;
   width: 100%;
-  margin-top: 100px;
-  padding: 50px 0;
 }
 
-#battlefields-container > * {
+#battlefields-container > div {
   display: flex;
-  width: 300px;
-  height: 300px;
+  width: 350px;
+  height: 350px;
 }
 
 #battlefields-container > div:first-child {
@@ -36,7 +61,7 @@ body {
 }
 
 .cell {
-  border: 2px solid #00000000;
+  border: 3px solid #00000000;
   position: relative;
   display: flex;
   justify-content: center;
@@ -49,15 +74,15 @@ body {
   content: "";
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: #ffffff80;
 }
 
 .cell:hover {
-  background-color: #bf1c1c;
+  background-color: #ff7fb0;
 }
 
 .available:hover {
-  background-color: #0f9351;
+  background-color: #7fffd4;
 }
 
 .shot {
@@ -70,11 +95,11 @@ body {
 
 .ship:not(.comp)::before,
 .ship:not(.comp)::after {
-  background-color: aquamarine;
+  background-color: #7fffd4;
   z-index: 100;
 }
 
 .ship.hit::before,
 .ship.hit::after {
-  background-color: rgb(255, 127, 176);
+  background-color: #ff7fb0;
 }

@@ -10,7 +10,7 @@ const battlefieldsDom = new Battlefields()
 battlefieldsDom.createBattlefields(10, 10)
 
 const player = new Player('Player');
-const comp = new Player('Comp');
+const comp = new Player('Computer');
 
 const playerGameboard = new Gameboard()
 const compGameboard = new Gameboard()
@@ -32,7 +32,7 @@ const compShips = compGameboard.ships
 
 async function placeShip(ship, horizontal=true) {
     let availableCells = playerGameboard.getAvailableCellsToPlaceShip(ship.size, horizontal) //true = horizontal, false = vertical
-    battlefieldsDom.highlightAvailableCells(availableCells)
+    battlefieldsDom.highlightAvailableCells('player', availableCells)
     const placement = new Placement()
     const cell = await placement.place(availableCells)
     playerGameboard.placeShip(ship, cell, horizontal) //true = horizontal, false = vertical
@@ -52,7 +52,7 @@ async function makeMove(activePlayer) {
     let again = false
     if (activePlayer === player) {
         const availableCells = compGameboard.getAvailableCellsToMakeMove()
-        battlefieldsDom.highlightAvailableCells(availableCells)
+        battlefieldsDom.highlightAvailableCells('comp', availableCells)
         const placement = new Movement()
         const coordinates = await placement.shoot('comp', availableCells)
         let hitShip = player.attack(coordinates)
@@ -71,7 +71,12 @@ async function makeMove(activePlayer) {
         battlefieldsDom.removeHighlight() 
     } else {
         const availableCells = playerGameboard.getCells().filter(cell => !cell.shot)
-        const cell = compLogic.randomPickCell(availableCells)
+        let cell;
+        if (playerGameboard.isShipAround(availableCells)) {
+            cell = playerGameboard.isShipAround(availableCells)
+        } else {
+            cell = compLogic.randomPickCell(availableCells)
+        }
         const coordinates = [cell.x, cell.y]
         let hitShip = comp.attack(coordinates)
         if (hitShip) {
@@ -96,6 +101,7 @@ for (let ship of playerShips) {
     if (rand === 0) {
         horizontal = false
     }
+    battlefieldsDom.updateDisplay('pre-game', null, null, ship)
     await placeShip(ship, horizontal)
 }
 
@@ -114,6 +120,7 @@ let activePlayer = player
 
 
 while (!gameOver) {
+    battlefieldsDom.updateDisplay('game', activePlayer.name)
     let again = await makeMove(activePlayer)
     if (!again) {
         if (playerGameboard.allShipsSunk) {
@@ -134,4 +141,4 @@ while (!gameOver) {
     }
 }
 
-console.log(`Winner is ${winner.name}`)
+battlefieldsDom.updateDisplay(null, null, winner.name)
