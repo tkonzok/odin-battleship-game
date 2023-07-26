@@ -1,3 +1,46 @@
+import {changeName} from './index.js'
+
+class Startup {
+    constructor() {
+    }
+
+    openForm() {
+        const body = document.querySelector('body');
+        const formDiv = document.createElement('div');
+        formDiv.classList.add('form-div');
+        body.appendChild(formDiv);
+        const form = document.createElement('form');
+        formDiv.appendChild(form);
+
+        let nameLabel = document.createElement('label');
+        nameLabel.setAttribute("for", "player-name");
+        nameLabel.textContent = 'Enter Your Name:';
+        form.appendChild(nameLabel);
+
+        let nameInput = document.createElement('input');
+        nameInput.setAttribute("type", "text");
+        nameInput.setAttribute("class", "form");
+        nameInput.setAttribute("id", "player-name");
+        nameInput.setAttribute("value", "Player 01");
+        nameInput.required = true;
+        nameInput.focus();
+        nameInput.select();
+        form.appendChild(nameInput);
+        
+        let btn = document.createElement('button');
+        btn.setAttribute("type", "submit");
+        btn.setAttribute("id", "submit-btn");
+        btn.textContent = "Start Game";
+        form.appendChild(btn);
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            changeName(nameInput.value);
+            body.removeChild(body.lastChild);
+        })
+    }
+}
+
 class Battlefields {
     constructor() {
         this.playerContainer = document.getElementById('player-battlefield-container');
@@ -88,8 +131,10 @@ class Battlefields {
         const display = document.getElementById('display')
         if (winner) {
             display.textContent = `Game over! The winner is ${winner}`
+        } else if (phase === 'game' && activePlayer.charAt(activePlayer.length - 1) === 's') {
+            display.textContent = `It's ${activePlayer} turn`
         } else if (phase === 'game') {
-            display.textContent = `It's ${activePlayer}s turn`
+            display.textContent = `It's ${activePlayer}'s turn`
         } else if (phase === 'pre-game') {
             display.textContent = `It's your turn to place a ship of size ${ship.size}`
         }
@@ -174,4 +219,4 @@ class Movement {
     }
 }
 
-export { Battlefields, Placement, Movement }
+export { Startup, Battlefields, Placement, Movement }

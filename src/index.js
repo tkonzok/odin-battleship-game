@@ -3,7 +3,7 @@ import './style.css';
 import { Gameboard } from './gameboard'
 import { Ship } from './ship'
 import { Player } from './player'
-import { Battlefields, Placement, Movement } from './dom'
+import { Startup, Battlefields, Placement, Movement } from './dom'
 import { CompLogic } from './complogic';
 
 const battlefieldsDom = new Battlefields()
@@ -23,12 +23,19 @@ comp.registerOpponentGameboard(playerGameboard)
 
 const compLogic = new CompLogic(compGameboard, playerGameboard)
 
-const sizesOfShips = [5, 4, 3]
+const sizesOfShips = [5, 4, 4, 3, 3, 2, 2]
 playerGameboard.createShips(sizesOfShips)
 compGameboard.createShips(sizesOfShips)
 
 const playerShips = playerGameboard.ships
 const compShips = compGameboard.ships
+
+const startup = new Startup();
+startup.openForm()
+
+function changeName(newName) {
+    player.name = newName
+}
 
 async function placeShip(ship, horizontal=true) {
     let availableCells = playerGameboard.getAvailableCellsToPlaceShip(ship.size, horizontal) //true = horizontal, false = vertical
@@ -142,3 +149,5 @@ while (!gameOver) {
 }
 
 battlefieldsDom.updateDisplay(null, null, winner.name)
+
+export { changeName }
