@@ -9,7 +9,7 @@ body {
   background-image: url(turku_mirrored_LQ.jpg);
   background-position: center top;
   background-repeat: no-repeat;
-  height: 100vh;
+  height: min(100vh, 100%);
   background-size: cover;
   display: flex;
   flex-direction: column;
