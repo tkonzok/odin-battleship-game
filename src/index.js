@@ -9,8 +9,8 @@ import { CompLogic } from './complogic';
 const battlefieldsDom = new Battlefields()
 battlefieldsDom.createBattlefields(10, 10)
 
-const player = new Player('Player');
-const comp = new Player('Computer');
+const player = new Player('Player 01', 'player');
+const comp = new Player('Computer', 'computer');
 
 const playerGameboard = new Gameboard()
 const compGameboard = new Gameboard()
@@ -35,6 +35,7 @@ startup.openForm()
 
 function changeName(newName) {
     player.name = newName
+    battlefieldsDom.updateDisplay('pre-game', player)
 }
 
 async function placeShip(ship, horizontal=true) {
@@ -85,6 +86,7 @@ async function makeMove(activePlayer) {
             cell = compLogic.randomPickCell(availableCells)
         }
         const coordinates = [cell.x, cell.y]
+        await new Promise(resolve => setTimeout(resolve, 1000));
         let hitShip = comp.attack(coordinates)
         if (hitShip) {
             if (hitShip.sunk === true) {
@@ -108,7 +110,7 @@ for (let ship of playerShips) {
     if (rand === 0) {
         horizontal = false
     }
-    battlefieldsDom.updateDisplay('pre-game', null, null, ship)
+    battlefieldsDom.updateDisplay('pre-game', player, null, ship)
     await placeShip(ship, horizontal)
 }
 
@@ -125,9 +127,9 @@ let gameOver = false
 let winner = player
 let activePlayer = player
 
-
 while (!gameOver) {
-    battlefieldsDom.updateDisplay('game', activePlayer.name)
+    battlefieldsDom.updateDisplay('game', activePlayer, null, null, compGameboard.sunkShips.length, playerGameboard.sunkShips.length)
+    battlefieldsDom.highlightActiveBoard(activePlayer)
     let again = await makeMove(activePlayer)
     if (!again) {
         if (playerGameboard.allShipsSunk) {

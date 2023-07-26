@@ -30,7 +30,7 @@ class Startup {
         let btn = document.createElement('button');
         btn.setAttribute("type", "submit");
         btn.setAttribute("id", "submit-btn");
-        btn.textContent = "Start Game";
+        btn.textContent = "START GAME";
         form.appendChild(btn);
 
         form.addEventListener("submit", (e) => {
@@ -127,16 +127,36 @@ class Battlefields {
         }
     }
 
-    updateDisplay(phase, activePlayer = null, winner = null, ship = null) {
-        const display = document.getElementById('display')
+    highlightActiveBoard(activePlayer = null) {
+        const playerBoard = document.getElementById('player-battlefield-container')
+        const compBoard = document.getElementById('comp-battlefield-container')
+        playerBoard.classList.remove('active')
+        compBoard.classList.remove('active')
+        if (activePlayer.player === 'player') {
+            compBoard.classList.add('active')
+        } else if (activePlayer.player === 'computer') {
+            playerBoard.classList.add('active')
+        }
+    }
+
+    updateDisplay(phase, activePlayer = null, winner = null, ship = null, playerScore = 0, compScore = 0) {
+        const display = document.getElementById('center-display')
+        const leftName = document.getElementById('player-name')
+        const leftScore = document.getElementById('player-score')
+        const rightScore = document.getElementById('comp-score')
+        rightScore.textContent = compScore
+        leftScore.textContent = playerScore
         if (winner) {
-            display.textContent = `Game over! The winner is ${winner}`
-        } else if (phase === 'game' && activePlayer.charAt(activePlayer.length - 1) === 's') {
-            display.textContent = `It's ${activePlayer} turn`
+            display.textContent = `Game over! The winner is ${winner}`       
+        } else if (phase === 'game' && activePlayer.name.charAt(activePlayer.name.length - 1) === 's') {
+            display.textContent = `It's ${activePlayer.name} turn`
         } else if (phase === 'game') {
-            display.textContent = `It's ${activePlayer}'s turn`
-        } else if (phase === 'pre-game') {
+            display.textContent = `It's ${activePlayer.name}'s turn`
+        } else if (phase === 'pre-game' && ship) {
             display.textContent = `It's your turn to place a ship of size ${ship.size}`
+        } else if (phase === 'pre-game' && !ship) {
+            leftName.textContent = activePlayer.name
+            display.textContent = ``
         }
     }
 }

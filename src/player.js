@@ -1,6 +1,7 @@
 class Player {
-    constructor(name) {
+    constructor(name, player) {
         this.name = name,
+        this.player = player
         this.opponent = null
     }
 
