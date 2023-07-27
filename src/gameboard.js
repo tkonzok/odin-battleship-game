@@ -98,13 +98,7 @@ class Gameboard {
 
     getAvailableCellsToMakeMove() {
         const allCells = this.cells
-        
-        function removeCellsWithShot(cells) {
-            return cells.filter(cell => cell.shot === false)
-        }
-
-        let availableCells = removeCellsWithShot(allCells);
-        return availableCells
+        return allCells.filter(cell => cell.shot === false);
     }
 
     isShipAround() {
@@ -125,6 +119,57 @@ class Gameboard {
             }
         }
         return shipAround
+    }
+
+    emptySpace() {
+        const rows = this.rows
+        const columns = this.columns
+        let colSpan = []
+        let rowSpan = []
+        for (let i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].shot === true) {
+                colSpan.push(0)
+            } else {
+                let maxSpan = 0
+                for (let j = Math.floor(rows / 2 - 0.5); j > 0; j--) {
+                    if (typeof(this.cells[i-j]) !== 'undefined' && typeof(this.cells[i+j]) !== 'undefined') {
+                        if (this.cells[i-j].x === this.cells[i].x && this.cells[i-j].shot === false && this.cells[i+j].x === this.cells[i].x && this.cells[i+j].shot === false) {
+                            if (maxSpan === 0) {
+                                maxSpan = j;
+                            }
+                        } else if (this.cells[i-j].x === this.cells[i].x && this.cells[i-j].shot === true || this.cells[i+j].x === this.cells[i].x && this.cells[i+j].shot === true) {
+                            maxSpan = 0
+                        }
+                    }   
+                }
+                colSpan.push(maxSpan) 
+            }
+        }
+        for (let i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].shot === true) {
+                rowSpan.push(0)
+            } else {
+                let maxSpan = 0
+                for (let j = Math.floor(columns / 2 - 0.5); j > 0; j--) {
+                    if (typeof(this.cells[i-j*rows]) !== 'undefined' && typeof(this.cells[i+j*rows]) !== 'undefined') {
+                        if (this.cells[i-j*rows].y === this.cells[i].y && this.cells[i-j*rows].shot === false && this.cells[i+j*rows].y === this.cells[i].y && this.cells[i+j*rows].shot === false) {
+                            if (maxSpan === 0) {
+                                maxSpan = j;
+                            }
+                        } else if (this.cells[i-j*rows].y === this.cells[i].y && this.cells[i-j*rows].shot === true || this.cells[i+j*rows].y === this.cells[i].y && this.cells[i+j*rows].shot === true) {
+                            maxSpan = 0
+                        }
+                    }   
+                } 
+                rowSpan.push(maxSpan)
+            }
+        }
+        let maxSpan = []
+        for (let i = 0; i < colSpan.length; i++) {
+            maxSpan.push(colSpan[i] + rowSpan[i])
+        }
+        const indexMaxSpan = maxSpan.indexOf(Math.max(...maxSpan))
+        return this.cells[indexMaxSpan]
     }
 
     placeShip(ship, cell, horizontal) {
@@ -213,8 +258,6 @@ class Gameboard {
         for (const cell of emptyCellsAround) {
             cell.shot = true
         }
-        console.log('sipSinks')
-        console.log(ship)
     }
 }
 

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=VT323&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Tektur&display=swap");
 
 :root {
   --rows: 10;
@@ -15,17 +15,17 @@ body {
   flex-direction: column;
   justify-content: start;
   align-items: center;
-  font-family: "VT323", monospace;
+  font-family: "Tektur", cursive;
 }
 
 .title {
-  font-size: 200px;
+  font-size: 160px;
   color: #eeeeee;
   text-align: center;
 }
 
 .display {
-  font-size: 36px;
+  font-size: 30px;
   background-color: #000000ac;
   color: #eeeeee;
   text-align: center;
@@ -34,9 +34,16 @@ body {
   margin-bottom: 50px;
   display: grid;
   grid-template-columns: 1fr 200px 1fr;
+  justify-content: center;
+  align-items: center;
 }
 
-.form-div {
+.score {
+  font-size: 96px;
+}
+
+.form-div,
+.restart-div {
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -51,6 +58,10 @@ body {
   align-items: center;
 }
 
+.restart-div {
+  padding-top: 365px;
+}
+
 form {
   background-color: #ddd;
   border: 2px solid #fff;
@@ -61,7 +72,7 @@ form {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 input {
@@ -74,7 +85,8 @@ input {
   text-align: center;
 }
 
-#submit-btn {
+#submit-btn,
+#restart-btn {
   border: 1px solid;
   height: 2.5rem;
   padding-left: 1rem;

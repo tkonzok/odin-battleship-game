@@ -35,7 +35,7 @@ startup.openForm()
 
 function changeName(newName) {
     player.name = newName
-    battlefieldsDom.updateDisplay('pre-game', player)
+    battlefieldsDom.updateDisplay('pre-game', player, null, playerShips[0])
 }
 
 async function placeShip(ship, horizontal=true) {
@@ -68,8 +68,6 @@ async function makeMove(activePlayer) {
         if (hitShip) {
             if (hitShip.isSunk() === true) {
                 compGameboard.shipSinks(hitShip)
-                console.log(compGameboard.ships)
-                console.log(compGameboard.sunkShips)
             }
             if (!compGameboard.allShipsSunk) {
                 again = true
@@ -80,19 +78,23 @@ async function makeMove(activePlayer) {
     } else {
         const availableCells = playerGameboard.getCells().filter(cell => !cell.shot)
         let cell;
-        if (playerGameboard.isShipAround(availableCells)) {
-            cell = playerGameboard.isShipAround(availableCells)
+        if (playerGameboard.isShipAround()) {
+            cell = playerGameboard.isShipAround()
+        } else if (availableCells.length % 3 !== 0) {
+            cell = playerGameboard.emptySpace()
+            if (cell.shot === true) {
+                cell = compLogic.randomPickCell(availableCells)
+            }
         } else {
             cell = compLogic.randomPickCell(availableCells)
         }
         const coordinates = [cell.x, cell.y]
         await new Promise(resolve => setTimeout(resolve, 1000));
         let hitShip = comp.attack(coordinates)
+        compGameboard.updateShipStatus()
         if (hitShip) {
-            if (hitShip.sunk === true) {
+            if (hitShip.isSunk() === true) {
                 playerGameboard.shipSinks(hitShip)
-                console.log(playerGameboard.ships)
-                console.log(playerGameboard.sunkShips)
             }
             if (!playerGameboard.allShipsSunk) {
                 again = true
@@ -150,6 +152,7 @@ while (!gameOver) {
     }
 }
 
-battlefieldsDom.updateDisplay(null, null, winner.name)
+battlefieldsDom.updateDisplay(null, null, winner.name, null, compGameboard.sunkShips.length, playerGameboard.sunkShips.length)
+battlefieldsDom.askForRestart()
 
 export { changeName }

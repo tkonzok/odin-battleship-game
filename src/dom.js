@@ -153,11 +153,32 @@ class Battlefields {
         } else if (phase === 'game') {
             display.textContent = `It's ${activePlayer.name}'s turn`
         } else if (phase === 'pre-game' && ship) {
-            display.textContent = `It's your turn to place a ship of size ${ship.size}`
-        } else if (phase === 'pre-game' && !ship) {
+            display.textContent = `Place a ship of size ${ship.size}`
             leftName.textContent = activePlayer.name
-            display.textContent = ``
         }
+    }
+
+    askForRestart() {
+        const body = document.querySelector('body');
+        const restartDiv = document.createElement('div');
+        restartDiv.classList.add('restart-div');
+        body.appendChild(restartDiv);
+        
+        let btn = document.createElement('button');
+        btn.setAttribute("type", "button");
+        btn.setAttribute("id", "restart-btn");
+        btn.textContent = "RESTART";
+        restartDiv.appendChild(btn);
+
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            body.removeChild(body.lastChild);
+            this.restart();
+        })
+    }
+
+    restart() {
+        window.location.reload()
     }
 }
 
