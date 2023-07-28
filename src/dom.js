@@ -141,7 +141,6 @@ class Battlefields {
 
     updateDisplay(phase, activePlayer = null, winner = null, ship = null, playerScore = 0, compScore = 0) {
         const display = document.getElementById('center-display')
-        const leftName = document.getElementById('player-name')
         const leftScore = document.getElementById('player-score')
         const rightScore = document.getElementById('comp-score')
         rightScore.textContent = compScore
@@ -154,7 +153,6 @@ class Battlefields {
             display.textContent = `It's ${activePlayer.name}'s turn`
         } else if (phase === 'pre-game' && ship) {
             display.textContent = `Place a ship of size ${ship.size}`
-            leftName.textContent = activePlayer.name
         }
     }
 

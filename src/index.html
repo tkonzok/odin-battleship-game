@@ -1,14 +1,18 @@
 <!doctype html>
 <html lang="en-us">
   <head>
-    <meta charset="utf-8" />
+    <meta
+      charset="utf-8"
+      name="Viewport"
+      content="width=device-width,initial-scale=1.0"
+    />
     <title>Battleship</title>
   </head>
   <body>
     <div class="title">BATTLESHIP</div>
     <div class="display" id="display">
       <div class="side-display" id="left-display">
-        <div class="name" id="player-name">Player 01</div>
+        <div class="name" id="player-name">You</div>
         <div class="score" id="player-score"></div>
       </div>
       <div id="center-display">Display</div>
@@ -18,10 +22,12 @@
       </div>
     </div>
     <div id="battlefields-container">
+      <div class="board-title">Your Board</div>
       <div
         id="player-battlefield-container"
         class="battlefield-container active"
       ></div>
+      <div class="board-title">Computer's Board</div>
       <div id="comp-battlefield-container" class="battlefield-container"></div>
     </div>
   </body>

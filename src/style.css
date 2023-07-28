@@ -9,31 +9,33 @@ body {
   background-image: url(turku_mirrored_LQ.jpg);
   background-position: center top;
   background-repeat: no-repeat;
-  height: min(100vh, 100%);
+  min-height: 100vh;
   background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
   font-family: "Tektur", cursive;
+  padding-bottom: 100px;
 }
 
 .title {
-  font-size: 160px;
+  font-size: clamp(100px, 15vw, 160px);
   color: #eeeeee;
   text-align: center;
 }
 
 .display {
-  font-size: 30px;
+  font-size: 24px;
   background-color: #000000ac;
   color: #eeeeee;
   text-align: center;
-  width: 550px;
+  width: 90vw;
+  max-width: 540px;
   height: 200px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
   display: grid;
-  grid-template-columns: 1fr 200px 1fr;
+  grid-template-columns: 2fr 4fr 2fr;
   justify-content: center;
   align-items: center;
 }
@@ -59,7 +61,9 @@ body {
 }
 
 .restart-div {
-  padding-top: 365px;
+  padding-top: 35px;
+  top: 410 px;
+  height: 75px;
 }
 
 form {
@@ -98,29 +102,34 @@ input {
 }
 
 #battlefields-container {
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: 1fr min-content;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 100px;
+  align-items: center;
+  gap: 0 50px;
   width: 100%;
 }
 
-#battlefields-container > div {
-  display: flex;
-  width: 350px;
-  height: 350px;
-}
-
-#battlefields-container > div:first-child {
-  justify-content: end;
+.board-title {
+  color: #eeeeee;
+  text-align: center;
+  font-size: 36px;
 }
 
 .battlefield-container {
+  display: flex;
+  width: 350px;
+  height: 350px;
   border: 10px solid #ffffff00;
 }
 
 .battlefield-container.active {
   border: 10px solid #f1ff97;
+}
+
+#battlefields-container > div:first-child {
+  justify-content: end;
 }
 
 #battlefields-container > * > div {
@@ -177,4 +186,37 @@ input {
 .ship.hit::after {
   background-color: #ff7fb0;
   cursor: default;
+}
+
+@media (max-width: 900px) {
+  #battlefields-container {
+    grid-template-rows: 1fr min-content 1fr min-content;
+    gap: 10px 0;
+  }
+}
+
+@media (min-width: 500px) and (max-width: 700px) {
+  .display {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .title {
+    font-size: 15vw;
+  }
+}
+
+@media (max-width: 500px) {
+  .display {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .battlefield-container {
+    width: 280px;
+    height: 280px;
+    border: 8px solid #ffffff00;
+  }
 }
