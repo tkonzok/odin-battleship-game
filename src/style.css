@@ -61,6 +61,7 @@ body {
 }
 
 .restart-div {
+  margin-top: 45vh;
   padding-top: 35px;
   top: 410 px;
   height: 75px;
@@ -134,6 +135,7 @@ input {
 
 #battlefields-container > * > div {
   display: grid;
+  grid-auto-flow: column;
   grid-template-columns: repeat(var(--columns), 1fr);
   grid-template-rows: repeat(var(--rows), 1fr);
   width: 100%;
@@ -157,7 +159,7 @@ input {
   height: 100%;
   background-color: #ffffff80;
 }
-
+/*
 .cell:hover {
   background-color: #ff7fb0;
 }
@@ -165,7 +167,7 @@ input {
 .available:hover {
   background-color: #7fffd4;
 }
-
+*/
 .shot {
   position: relative;
   background-color: #000000;

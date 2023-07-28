@@ -9,7 +9,7 @@ import { CompLogic } from './complogic';
 const battlefieldsDom = new Battlefields()
 battlefieldsDom.createBattlefields(10, 10)
 
-const player = new Player('Player 01', 'player');
+const player = new Player('You', 'player');
 const comp = new Player('Computer', 'computer');
 
 const playerGameboard = new Gameboard()
@@ -30,8 +30,8 @@ compGameboard.createShips(sizesOfShips)
 const playerShips = playerGameboard.ships
 const compShips = compGameboard.ships
 
-const startup = new Startup();
-startup.openForm()
+// const startup = new Startup();
+// startup.openForm()
 
 function changeName(newName) {
     player.name = newName
@@ -40,12 +40,13 @@ function changeName(newName) {
 
 async function placeShip(ship, horizontal=true) {
     let availableCells = playerGameboard.getAvailableCellsToPlaceShip(ship.size, horizontal) //true = horizontal, false = vertical
-    battlefieldsDom.highlightAvailableCells('player', availableCells)
+    const allCells = playerGameboard.getCells()
+    battlefieldsDom.highlightAvailableCells('player', availableCells, allCells, ship.size, horizontal)
     const placement = new Placement()
     const cell = await placement.place(availableCells)
+    battlefieldsDom.removeHighlight('player', availableCells, allCells) 
     playerGameboard.placeShip(ship, cell, horizontal) //true = horizontal, false = vertical
     battlefieldsDom.placeShip('player', ship.size, cell, horizontal)  //true = horizontal, false = vertical
-    battlefieldsDom.removeHighlight() 
 }
 
 function compPlaceShip(ship, horizontal=true) {
@@ -60,7 +61,7 @@ async function makeMove(activePlayer) {
     let again = false
     if (activePlayer === player) {
         const availableCells = compGameboard.getAvailableCellsToMakeMove()
-        battlefieldsDom.highlightAvailableCells('comp', availableCells)
+        battlefieldsDom.highlightAvailableCells('comp', availableCells, compGameboard.getCells())
         const placement = new Movement()
         const coordinates = await placement.shoot('comp', availableCells)
         let hitShip = player.attack(coordinates)
@@ -74,7 +75,7 @@ async function makeMove(activePlayer) {
             }
         }
         battlefieldsDom.renderBoard('comp', compGameboard.getCells())
-        battlefieldsDom.removeHighlight() 
+        battlefieldsDom.removeHighlight('comp', availableCells, compGameboard.getCells()) 
     } else {
         const availableCells = playerGameboard.getCells().filter(cell => !cell.shot)
         let cell;

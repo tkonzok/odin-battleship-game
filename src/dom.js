@@ -57,41 +57,78 @@ class Battlefields {
 
         this.columns = columns;
 
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
+        for (let i = 0; i < columns; i++) {
+            for (let j = 0; j < rows; j++) {
                 const cell = document.createElement('div')
                 cell.classList.add('cell');
-                cell.id = `playerCell[${j}, ${i}]`;
-                cell.setAttribute('x', j);
-                cell.setAttribute('y', i);
+                cell.id = `playerCell[${i}, ${j}]`;
+                cell.setAttribute('x', i);
+                cell.setAttribute('y', j);
                 playerBattlefield.appendChild(cell);
             }
         }
 
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < columns; j++) {
+        for (let i = 0; i < columns; i++) {
+            for (let j = 0; j < rows; j++) {
                 const cell = document.createElement('div')
                 cell.classList.add('cell');
                 cell.classList.add('comp')
-                cell.id = `compCell[${j}, ${i}]`;
-                cell.setAttribute('x', j);
-                cell.setAttribute('y', i);
+                cell.id = `compCell[${i}, ${j}]`;
+                cell.setAttribute('x', i);
+                cell.setAttribute('y', j);
                 compBattlefield.appendChild(cell);
             }
         }
     }
 
-    highlightAvailableCells(user, cells) {
-        for (const cell of cells) {
-            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
-            div.classList.add('available')
+    styleBackground(element, color) {
+        element.style.background = `${color}`
+    }
+
+    simulateShip(element, user, cell, shipSize, horizontal, color) {
+        element.style.backgroundColor = `${color}`
+        for (let i = 1; i < shipSize; i++) {
+            if (horizontal === true) {
+                const shipCell = document.getElementById(`${user}Cell[${cell.x + i}, ${cell.y}]`);
+                shipCell.style.backgroundColor = `${color}`;
+            } else {
+                const shipCell = document.getElementById(`${user}Cell[${cell.x}, ${cell.y + i}]`);
+                shipCell.style.backgroundColor = `${color}`;
+            }
         }
     }
 
-    removeHighlight() {
-        const cells = document.querySelectorAll('.available');
-        for (let cell of cells) {
-            cell.classList.remove('available')
+    highlightAvailableCells(user, availableCells, allCells, shipSize = 0, horizontal = false) {
+        for (const cell of availableCells) {
+            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
+            div.classList.add('available')
+        }
+        for (const cell of allCells) {
+            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
+            div.style.backgroundColor = '#00000000'
+            if (!div.classList.contains('available')) {
+                div.addEventListener('mouseover', () => {this.styleBackground(div, '#ff7fb0')});
+                div.addEventListener('mouseout', () => {this.styleBackground(div, '#00000000')});
+            }
+        }
+        for (const cell of availableCells) {
+            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
+            div.addEventListener('mouseover', () => {this.simulateShip(div, user, cell, shipSize, horizontal, '#7fffd4')})
+            div.addEventListener('mouseout', () => {this.simulateShip(div, user, cell, shipSize, horizontal, '#00000000')})
+        }
+    }
+
+    removeHighlight(user, availableCells, allCells) {
+        for (const cell of availableCells) {
+            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
+            div.classList.remove('available')
+        }
+        for (const cell of allCells) {
+            const div = document.getElementById(`${user}Cell[${cell.x}, ${cell.y}]`);
+            div.style.backgroundColor = '#00000000'
+            let clone = div.cloneNode(true)
+            div.parentNode.appendChild(clone)
+            div.remove()
         }
     }
 
@@ -146,11 +183,11 @@ class Battlefields {
         rightScore.textContent = compScore
         leftScore.textContent = playerScore
         if (winner) {
-            display.textContent = `Game over! The winner is ${winner}`       
-        } else if (phase === 'game' && activePlayer.name.charAt(activePlayer.name.length - 1) === 's') {
-            display.textContent = `It's ${activePlayer.name} turn`
+            display.textContent = `Game over! The winner is: ${winner}`       
+        } else if (phase === 'game' && activePlayer === 'player') {
+            display.textContent = `It's your turn`
         } else if (phase === 'game') {
-            display.textContent = `It's ${activePlayer.name}'s turn`
+            display.textContent = `It's computer's turn`
         } else if (phase === 'pre-game' && ship) {
             display.textContent = `Place a ship of size ${ship.size}`
         }
@@ -200,14 +237,14 @@ class Placement {
     receivePlacement(availableCells) {
         for (const cell of availableCells) {
             const element = document.getElementById(`playerCell[${cell.x}, ${cell.y}]`)
-            element.addEventListener('click', () => {this.btnResolver(cell.x, cell.y)})
+            element.addEventListener('mouseup', () => {this.btnResolver(cell.x, cell.y)})
         }
     }
 
     removeListener(availableCells) {
         for (const cell of availableCells) {
             const element = document.getElementById(`playerCell[${cell.x}, ${cell.y}]`)
-            element.removeEventListener('click', this.btnResolver)
+            element.removeEventListener('mouseup', this.btnResolver)
         }
     }
 
