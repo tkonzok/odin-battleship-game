@@ -16,7 +16,6 @@ body {
   justify-content: start;
   align-items: center;
   font-family: "Tektur", cursive;
-  padding-bottom: 100px;
 }
 
 .title {
@@ -30,9 +29,8 @@ body {
   background-color: #000000ac;
   color: #eeeeee;
   text-align: center;
-  width: 90vw;
-  max-width: 540px;
-  height: 200px;
+  padding: 0 24px;
+  height: 160px;
   margin-bottom: 20px;
   display: grid;
   grid-template-columns: 2fr 4fr 2fr;
@@ -109,7 +107,6 @@ input {
   justify-content: center;
   align-items: center;
   gap: 0 50px;
-  width: 100%;
 }
 
 .board-title {
@@ -123,6 +120,7 @@ input {
   width: 350px;
   height: 350px;
   border: 10px solid #ffffff00;
+  margin: 0 auto;
 }
 
 .battlefield-container.active {
@@ -143,7 +141,7 @@ input {
 }
 
 .cell {
-  border: 3px solid #00000000;
+  border: 2px solid #00000000;
   position: relative;
   display: flex;
   justify-content: center;
@@ -159,15 +157,7 @@ input {
   height: 100%;
   background-color: #ffffff80;
 }
-/*
-.cell:hover {
-  background-color: #ff7fb0;
-}
 
-.available:hover {
-  background-color: #7fffd4;
-}
-*/
 .shot {
   position: relative;
   background-color: #000000;
@@ -190,35 +180,137 @@ input {
   cursor: default;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 769px) and (min-aspect-ratio: 0.85) {
+  .battlefield-container {
+    width: min(
+      350px,
+      min(calc(100vh - 17.25vw - 160px - 47px), calc(45vw - 45px))
+    );
+    height: min(
+      350px,
+      min(calc(100vh - 17.25vw - 160px - 47px), calc(45vw - 45px))
+    );
+  }
+}
+
+@media (min-width: 769px) and (max-aspect-ratio: 0.85) {
   #battlefields-container {
-    grid-template-rows: 1fr min-content 1fr min-content;
+    grid-template-rows: 42px min-content 42px min-content;
     gap: 10px 0;
   }
-}
 
-@media (min-width: 500px) and (max-width: 700px) {
-  .display {
-    font-size: 20px;
+  .battlefield-container {
+    width: min(calc((100vh - 17.25vw - 160px) / 2 - 94px), 90vw);
+    height: min(calc((100vh - 17.25vw - 160px) / 2 - 94px), 90vw);
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) and (min-aspect-ratio: 0.85) {
+  .display {
+    font-size: 20px;
+    height: 120px;
+    width: 100vw;
+  }
   .title {
     font-size: 15vw;
   }
-}
 
-@media (max-width: 500px) {
-  .display {
-    font-size: 16px;
+  .score {
+    font-size: 64px;
+  }
+
+  .battlefield-container {
+    width: min(
+      350px,
+      min(calc(100vh - 17.25vw - 120px - 47px), calc(45vw - 45px))
+    );
+    height: min(
+      350px,
+      min(calc(100vh - 17.25vw - 120px - 47px), calc(45vw - 45px))
+    );
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 768px) and (max-aspect-ratio: 0.85) {
+  .display {
+    font-size: 20px;
+    height: 120px;
+    width: 100vw;
+  }
+  .title {
+    font-size: 15vw;
+  }
+
+  .score {
+    font-size: 64px;
+  }
+
+  #battlefields-container {
+    grid-template-rows: 42px min-content 42px min-content;
+    gap: 10px 0;
+  }
+
   .battlefield-container {
-    width: 280px;
-    height: 280px;
-    border: 8px solid #ffffff00;
+    width: min(calc((100vh - 17.25vw - 120px) / 2 - 94px), 90vw);
+    height: min(calc((100vh - 17.25vw - 120px) / 2 - 94px), 90vw);
+  }
+}
+
+@media (max-width: 512px) and (min-aspect-ratio: 0.85) {
+  .display {
+    font-size: 16px;
+    height: 80px;
+    width: 100vw;
+  }
+  .title {
+    font-size: 15vw;
+  }
+
+  .name {
+    font-size: 12px;
+  }
+
+  .score {
+    font-size: 48px;
+  }
+
+  .battlefield-container {
+    width: min(
+      350px,
+      min(calc(100vh - 17.25vw - 80px - 47px), calc(45vw - 45px))
+    );
+    height: min(
+      350px,
+      min(calc(100vh - 17.25vw - 80px - 47px), calc(45vw - 45px))
+    );
+  }
+}
+
+@media (max-width: 512px) and (max-aspect-ratio: 0.85) {
+  .display {
+    font-size: 16px;
+    height: 80px;
+    width: 100vw;
+  }
+  .title {
+    font-size: 15vw;
+  }
+
+  .name {
+    font-size: 12px;
+  }
+
+  .score {
+    font-size: 48px;
+  }
+
+  #battlefields-container {
+    grid-template-rows: 42px min-content 42px min-content;
+    gap: 10px 0;
+  }
+
+  .battlefield-container {
+    width: min(calc((100vh - 17.25vw - 80px) / 2 - 94px), 90vw);
+    height: min(calc((100vh - 17.25vw - 80px) / 2 - 94px), 90vw);
   }
 }

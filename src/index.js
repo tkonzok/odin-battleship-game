@@ -10,7 +10,7 @@ const battlefieldsDom = new Battlefields()
 battlefieldsDom.createBattlefields(10, 10)
 
 const player = new Player('You', 'player');
-const comp = new Player('Computer', 'computer');
+const comp = new Player('Comp', 'computer');
 
 const playerGameboard = new Gameboard()
 const compGameboard = new Gameboard()
