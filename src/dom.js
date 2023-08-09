@@ -180,9 +180,11 @@ class Battlefields {
         const display = document.getElementById('center-display')
         const leftScore = document.getElementById('player-score')
         const rightScore = document.getElementById('comp-score')
+        const compCellsWithShip = document.querySelectorAll('div.ship.comp:not(.hit), div.ship.comp:not(.hit)')
         rightScore.textContent = compScore
         leftScore.textContent = playerScore
         if (winner) {
+            compCellsWithShip.forEach((cell) => cell.classList.add('gameover'))
             display.textContent = `Game over! The winner is: ${winner}`       
         } else if (phase === 'game' && activePlayer === 'player') {
             display.textContent = `It's your turn`
