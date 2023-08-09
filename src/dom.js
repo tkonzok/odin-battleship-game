@@ -176,22 +176,28 @@ class Battlefields {
         }
     }
 
-    updateDisplay(phase, activePlayer = null, winner = null, ship = null, playerScore = 0, compScore = 0) {
+    updateDisplay(phase, activePlayer = null, winner = null, ship = null, playerScore = 0, compScore = 0, horizontal = null) {
         const display = document.getElementById('center-display')
         const leftScore = document.getElementById('player-score')
         const rightScore = document.getElementById('comp-score')
         const compCellsWithShip = document.querySelectorAll('div.ship.comp:not(.hit), div.ship.comp:not(.hit)')
         rightScore.textContent = compScore
         leftScore.textContent = playerScore
+        const orientation = (horizontal) ? 'horizontal' : 'vertical'
         if (winner) {
             compCellsWithShip.forEach((cell) => cell.classList.add('gameover'))
-            display.textContent = `Game over! The winner is: ${winner}`       
+            if (winner === 'Comp') {
+                display.textContent = `Game over, you lost!`
+            } else {
+                display.textContent = `Game over, you won!`
+            }
+                   
         } else if (phase === 'game' && activePlayer === 'player') {
-            display.textContent = `It's your turn`
+            display.textContent = `It's your turn.`
         } else if (phase === 'game') {
-            display.textContent = `It's computer's turn`
+            display.textContent = `It's comp's turn`
         } else if (phase === 'pre-game' && ship) {
-            display.textContent = `Place a ship of size ${ship.size}`
+            display.textContent = `Place a ship of size ${ship.size} ${orientation}ly on your board.`
         }
     }
 

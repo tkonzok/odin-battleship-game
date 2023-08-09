@@ -113,7 +113,7 @@ for (let ship of playerShips) {
     if (rand === 0) {
         horizontal = false
     }
-    battlefieldsDom.updateDisplay('pre-game', player, null, ship)
+    battlefieldsDom.updateDisplay('pre-game', player, null, ship, null, null, horizontal)
     await placeShip(ship, horizontal)
 }
 
